@@ -2,57 +2,72 @@ package com.ismkr.sort_algo_visualizer.algorithms;
 
 import java.awt.Color;
 
-import com.ismkr.sort_algo_visualizer.ui.Visual;
+import com.ismkr.sort_algo_visualizer.controllers.VisualController;
+import com.ismkr.sort_algo_visualizer.model.Constants;
 
 public class SelectionSort {
 
-	private final Visual visual;
+	private final VisualController controller;
 	private final int speed;
 
-    public SelectionSort(Visual visual, int speed) {
-        this.visual = visual;
+    public SelectionSort(VisualController controller, int speed) {
+        this.controller = controller;
         this.speed = speed;
         start();
+        updateUi();
     }
 
     private void start() {
-        for (int i = 0; i < Visual.POLES_NUMBER-1; i++) {
-            Visual.poles[i].setColor(Color.MAGENTA);
+        for (int i = 0; i < Constants.POLES_NUMBER-1; i++) {
+        	controller.setColor(i, Color.magenta);
             int index = i;
-            for (int j = i+1; j < Visual.POLES_NUMBER; j++) {
-                Visual.poles[j].setColor(Color.orange);
-                if (Visual.poles[j].getLength() < Visual.poles[index].getLength()) {
+            for (int j = i+1; j < Constants.POLES_NUMBER; j++) {
+            	controller.setColor(j, Color.orange);
+                if (controller.getLength(j) < controller.getLength(index)) {
                     index = j;
                 }
                 try {
-                    visual.repaint();
+                	controller.repaint();
                     Thread.sleep(speed);
-                    Visual.poles[j].setColor(Color.darkGray);
+                	controller.setColor(j, Color.darkGray);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
 
             try {
-                Visual.poles[index].setColor(Color.orange);
-                visual.repaint();
+            	controller.setColor(index, Color.orange);
+                controller.repaint();
                 Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            int temp = Visual.poles[index].getLength();
-            Visual.poles[index].setLength(Visual.poles[i].getLength());
-            Visual.poles[i].setLength(temp);
+            int temp = controller.getLength(index);
+			controller.setLength(index, controller.getLength(i));
+			controller.setLength(i, temp);
 
             try {
-                if (index != i) Visual.poles[index].setColor(Color.darkGray);
-                visual.repaint();
+                if (index != i) 
+                	controller.setColor(index, Color.darkGray);
+                controller.repaint();
                 Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private void updateUi() {
+		for(int i=0; i < Constants.POLES_NUMBER; i++) {
+			try {
+				controller.setColor(i, Color.green);
+	            controller.repaint();
+	            Thread.sleep(speed);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+		}
+	}
 	
 }

@@ -1,4 +1,4 @@
-package com.ismkr.sort_algo_visualizer.ui;
+package com.ismkr.sort_algo_visualizer.views;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -8,9 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
 
-import com.ismkr.sort_algo_visualizer.algorithms.Constants;
+import com.ismkr.sort_algo_visualizer.controllers.MenuController;
 import com.ismkr.sort_algo_visualizer.listeners.IActionRequired;
 import com.ismkr.sort_algo_visualizer.listeners.IThreadStoped;
+import com.ismkr.sort_algo_visualizer.model.Constants;
 
 import java.awt.Color;
 import javax.swing.JRadioButton;
@@ -19,31 +20,25 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class Menu extends JPanel implements IThreadStoped {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6363588429586851223L;
+public class MenuView extends JPanel implements ActionListener {
 	
 	private JButton startBtn;
 	private JButton newArrayBtn;
-	
 	private JComboBox<Object> sortAlgoCB;
-	
 	private ButtonGroup speedGroup = new ButtonGroup();
+	private JRadioButton fastRB;
+	private JRadioButton mediumRB;
 	
-
-	private IActionRequired listener;
+	private MenuController controller;
 
 	/**
 	 * Create the panel.
 	 */
-	public Menu(IActionRequired listener) {
+	public MenuView(MenuController controller) {
 		setBackground(new Color(255, 255, 255));
 		setLayout(null);
 		
-		this.listener = listener;
+		this.controller = controller;
 		
 		JPanel titelBack = new JPanel();
 		titelBack.setBackground(new Color(0, 128, 128));
@@ -64,14 +59,14 @@ public class Menu extends JPanel implements IThreadStoped {
 		lblNewLabel.setBounds(10, 99, 180, 19);
 		add(lblNewLabel);
 		
-		JRadioButton fastRB = new JRadioButton("Fast");
+		fastRB = new JRadioButton("Fast");
 		fastRB.setBackground(new Color(255, 255, 255));
 		fastRB.setSelected(true);
 		fastRB.setFont(new Font("Century Gothic", Font.PLAIN, 13));
 		fastRB.setBounds(10, 185, 180, 23);
 		add(fastRB);
 		
-		JRadioButton mediumRB = new JRadioButton("Medium");
+		mediumRB = new JRadioButton("Medium");
 		mediumRB.setBackground(new Color(255, 255, 255));
 		mediumRB.setFont(new Font("Century Gothic", Font.PLAIN, 13));
 		mediumRB.setBounds(10, 205, 180, 23);
@@ -97,31 +92,15 @@ public class Menu extends JPanel implements IThreadStoped {
 		startBtn.setFont(new Font("Century Gothic", Font.BOLD, 15));
 		startBtn.setBackground(new Color(0, 128, 128));
 		startBtn.setBounds(10, 418, 180, 30);
+		startBtn.addActionListener(this);
 		add(startBtn);
-		startBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				newArrayBtn.setEnabled(false);
-				startBtn.setEnabled(false);
-				String algo = sortAlgoCB.getSelectedItem().toString();
-				
-				if(fastRB.isSelected()) startBtnClicked(Constants.FAST, algo);
-				else if(mediumRB.isSelected()) startBtnClicked(Constants.MEDIUM, algo);
-				else startBtnClicked(Constants.LOW, algo);
-			}
-		});
 		
 		newArrayBtn = new JButton("Genrate New Array");
 		newArrayBtn.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		newArrayBtn.setBackground(Color.WHITE);
 		newArrayBtn.setBounds(10, 267, 180, 30);
+		newArrayBtn.addActionListener(this);
 		add(newArrayBtn);
-		newArrayBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(newArrayBtn.isEnabled()) newArrayBtnClicked();
-			}
-		});
 		
 		sortAlgoCB = new JComboBox<>();
 		sortAlgoCB.setFont(new Font("Century Gothic", Font.BOLD, 15));
@@ -130,22 +109,29 @@ public class Menu extends JPanel implements IThreadStoped {
 		add(sortAlgoCB);
 	}
 
-	private void newArrayBtnClicked() {
-		listener.reset();
-	}
-
-	private void stopBtnClicked() {	
-		listener.stop();
-	}
-
-	private void startBtnClicked(int speed, String algo) {
-		listener.start(speed, algo);
-	}
-
-	@Override
-	public void threadStoped() {
+	public void enableButtons() {
 		startBtn.setEnabled(true);
 		newArrayBtn.setEnabled(true);
+	}
+
+	private void disableButtons() {
+		startBtn.setEnabled(false);
+		newArrayBtn.setEnabled(false);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == startBtn) {
+			disableButtons();
+			String algorithm = sortAlgoCB.getSelectedItem().toString();
+
+			if(fastRB.isSelected()) controller.startButtonClicked(algorithm, Constants.FAST);
+			else if(mediumRB.isSelected()) controller.startButtonClicked(algorithm, Constants.MEDIUM);
+			else controller.startButtonClicked(algorithm, Constants.LOW);
+		} 
+		else if(e.getSource() == newArrayBtn) {
+			if(newArrayBtn.isEnabled()) controller.generateNewArray();
+		}
 	}
 	
 }

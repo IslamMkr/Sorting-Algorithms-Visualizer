@@ -2,17 +2,19 @@ package com.ismkr.sort_algo_visualizer.algorithms;
 
 import java.awt.Color;
 
-import com.ismkr.sort_algo_visualizer.ui.Visual;
+import com.ismkr.sort_algo_visualizer.controllers.VisualController;
+import com.ismkr.sort_algo_visualizer.model.Constants;
 
 public class MergeSort {
 
-	private final Visual visual;
+	private final VisualController controller;
 	private final int speed;
 
-    public MergeSort(Visual visual, int speed) {
-        this.visual = visual;
+    public MergeSort(VisualController controller, int speed) {
+        this.controller = controller;
         this.speed = speed;
-        start(0, Visual.POLES_NUMBER - 1);
+        start(0, Constants.POLES_NUMBER - 1);
+        updateUi();
     }
 
     private void start(int startIndex, int lastIndex) {
@@ -34,8 +36,8 @@ public class MergeSort {
     	int[] rightSide = new int[rightSideLength]; // Temporary copy of right side
     	
     	// Copying values
-    	for(int i=0; i < leftSideLength; i++) leftSide[i] = Visual.poles[startIndex + i].getLength(); 
-    	for(int i=0; i < rightSideLength; i++) rightSide[i] = Visual.poles[middle + i + 1].getLength();
+    	for(int i=0; i < leftSideLength; i++) leftSide[i] = controller.getLength(startIndex + i);
+    	for(int i=0; i < rightSideLength; i++) rightSide[i] = controller.getLength(middle + i + 1);
     	
     	int i = 0, j = 0;
     	
@@ -44,38 +46,38 @@ public class MergeSort {
     	// Swaping
     	while(i < leftSideLength && j < rightSideLength) {
     		if(leftSide[i] <= rightSide[j]) {
-    			Visual.poles[tempIndex].setLength(leftSide[i]);
+    			controller.setLength(tempIndex, leftSide[i]);
     			i++;
         		tempIndex++;
         		try {
     				Thread.sleep(speed);
-    				visual.repaint();
+    				controller.repaint();
     			} catch (InterruptedException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
     		} else {
-    			Visual.poles[tempIndex].setLength(rightSide[j]);
+    			controller.setLength(tempIndex, rightSide[j]);
     			j++;
         		tempIndex++;
         		try {
     				Thread.sleep(speed);
-    				visual.repaint();
+    				controller.repaint();
     			} catch (InterruptedException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
     		}
     		
+    		controller.setColor(startIndex + i, Color.magenta);
+    		controller.setColor(middle + j, Color.magenta);
 
-        	Visual.poles[startIndex + i].setColor(Color.magenta);
-        	Visual.poles[middle + j].setColor(Color.magenta);
         	try {
-   				visual.repaint();
+   				controller.repaint();
     			Thread.sleep(speed);
-            	Visual.poles[startIndex + i].setColor(Color.DARK_GRAY);
-            	Visual.poles[middle + j].setColor(Color.DARK_GRAY);
-   				visual.repaint();
+    			controller.setColor(startIndex + i, Color.DARK_GRAY);
+        		controller.setColor(middle + j, Color.DARK_GRAY);
+   				controller.repaint();
    			} catch (InterruptedException e) {
    				// TODO Auto-generated catch block
    				e.printStackTrace();
@@ -84,12 +86,12 @@ public class MergeSort {
     	
     	// Copying any left values
     	while(i < leftSideLength) {
-			Visual.poles[tempIndex].setLength(leftSide[i]);
+    		controller.setLength(tempIndex, leftSide[i]);
 			i++;
     		tempIndex++;
     		try {
 				Thread.sleep(speed);
-				visual.repaint();
+				controller.repaint();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -97,12 +99,12 @@ public class MergeSort {
     	}
     	
     	while(j < rightSideLength) {
-			Visual.poles[tempIndex].setLength(rightSide[j]);
+    		controller.setLength(tempIndex, rightSide[j]);
 			j++;
     		tempIndex++;
     		try {
 				Thread.sleep(speed);
-				visual.repaint();
+				controller.repaint();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -111,25 +113,17 @@ public class MergeSort {
     	
     	
     }
+
+    private void updateUi() {
+		for(int i=0; i < Constants.POLES_NUMBER; i++) {
+			try {
+				controller.setColor(i, Color.green);
+	            controller.repaint();
+	            Thread.sleep(speed);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+		}
+	}
 	
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

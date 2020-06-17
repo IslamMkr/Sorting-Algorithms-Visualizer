@@ -4,8 +4,6 @@ public interface IActionRequired {
 	
 	void reset();
 	
-	void start(int speed, String algo);
-	
-	void stop();
+	void start(String algorithm, int speed);
 	
 }
