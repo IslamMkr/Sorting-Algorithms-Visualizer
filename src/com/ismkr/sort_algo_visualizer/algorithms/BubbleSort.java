@@ -53,8 +53,6 @@ public class BubbleSort {
         }
     }
     
-
-
 	private void updateUi() {
 		for(int i=0; i < Constants.POLES_NUMBER; i++) {
 			try {

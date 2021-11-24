@@ -17,7 +17,7 @@ public class VisualView extends JPanel{
     	poles = new Pole[Constants.POLES_NUMBER];
     	
         for (int i=0; i < Constants.POLES_NUMBER; i++) 
-        	poles[i] = new Pole(new Point(i * (Constants.WIDTH + 2), 0));
+        	poles[i] = new Pole(new Point(i * (Constants.WIDTH + 10), 0));
     }
 
     @Override
